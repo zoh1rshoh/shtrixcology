@@ -1,0 +1,41 @@
+export const tokens = {
+  colors: {
+    black: '#000000',
+    white: '#FFFFFF',
+    gray50: '#FAFAFA',
+    gray100: '#F5F5F5',
+    gray200: '#E5E5E5',
+    gray300: '#D4D4D4',
+    gray400: '#A3A3A3',
+    gray500: '#737373',
+    gray600: '#525252',
+    gray700: '#404040',
+    gray800: '#262626',
+    gray900: '#171717',
+    lime: '#BAFF59',
+    limeDark: '#9FE63D',
+    limeLight: '#D4FFA0',
+    success: '#22C55E',
+    warning: '#F59E0B',
+    error: '#EF4444',
+    info: '#3B82F6',
+  },
+  fonts: {
+    sans: 'Inter',
+    mono: 'JetBrains Mono',
+  },
+  fontSize: {
+    xs: 12, sm: 14, base: 16, lg: 18, xl: 20,
+    '2xl': 24, '3xl': 30, '4xl': 36, '5xl': 48,
+  },
+  spacing: {
+    xxs: 2, xs: 4, sm: 8, md: 16, lg: 24, xl: 32, '2xl': 48, '3xl': 64,
+  },
+  radius: { sm: 8, md: 12, lg: 16, xl: 24, full: 9999 },
+  shadow: {
+    sm: '0 1px 2px rgba(0,0,0,0.05)',
+    md: '0 4px 6px rgba(0,0,0,0.08)',
+    lg: '0 10px 15px rgba(0,0,0,0.10)',
+    glow: '0 0 20px rgba(186,255,89,0.3)',
+  },
+} as const;

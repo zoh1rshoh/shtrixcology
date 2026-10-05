@@ -1,0 +1,27 @@
+node_modules/
+.pnpm-store/
+dist/
+build/
+*.tsbuildinfo
+
+.env
+.env.local
+.env.*.local
+!.env.example
+
+*.log
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+.expo/
+.expo-shared/
+
+coverage/
+tmp/
+temp/
+
+# Prisma
+services/api/prisma/*.db

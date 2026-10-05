@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  phone        String   @unique
+  email        String?  @unique
+  fullName     String
+  passwordHash String
+  role         String   @default("user")
+  city         String?
+  createdAt    DateTime @default(now())
+
+  passports    Passport[]
+  transactions WalletTransaction[]
+  impactRecords ImpactRecord[]
+  teamMembers  TeamMember[]
+  teamsCaptained Team[] @relation("TeamCaptain")
+
+  @@map("users")
+}
+
+model Product {
+  id            String   @id @default(uuid())
+  barcode       String   @unique
+  name          String
+  brand         String?
+  packagingType String
+  weightGrams   Float?
+  source        String   @default("manual")
+  verified      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  passports     Passport[]
+
+  @@map("products")
+}
+
+model Passport {
+  id                    String   @id @default(uuid())
+  userId                String
+  productId             String?
+  barcode               String
+  productName           String
+  aiMaterial            String
+  aiConfidence          Float
+  aiStatus              String   @default("pending")
+  aiResponse            Json?
+  secondLifePredictions Json
+  declaredWeight        Float
+  isEmpty               Boolean
+  state                 String   @default("created")
+  photoUrl              String?
+  photoPhash            String?
+  rewardPoints          Int      @default(0)
+  createdAt             DateTime @default(now())
+  verifiedAt            DateTime?
+  returnedAt            DateTime?
+  rewardedAt            DateTime?
+  recycledAt            DateTime?
+
+  user                  User     @relation(fields: [userId], references: [id])
+  product               Product? @relation(fields: [productId], references: [id])
+  events                PassportEvent[]
+  transactions          WalletTransaction[]
+  impactRecords         ImpactRecord[]
+
+  @@index([userId])
+  @@index([state])
+  @@map("passports")
+}
+
+model PassportEvent {
+  id         String   @id @default(uuid())
+  passportId String
+  eventType  String
+  actor      String
+  location   String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  passport   Passport @relation(fields: [passportId], references: [id], onDelete: Cascade)
+
+  @@index([passportId])
+  @@map("passport_events")
+}
+
+model WalletTransaction {
+  id            String   @id @default(uuid())
+  userId        String
+  deltaPoints   Int
+  reason        String
+  submissionId  String?
+  redemptionId  String?
+  balanceAfter  Int
+  createdAt     DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id])
+  passport      Passport? @relation(fields: [submissionId], references: [id])
+
+  @@index([userId])
+  @@map("wallet_transactions")
+}
+
+model ImpactRecord {
+  id           String   @id @default(uuid())
+  userId       String
+  passportId   String
+  material     String
+  weightGrams  Float
+  co2SavedG    Float
+  methodology  String
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id])
+  passport     Passport @relation(fields: [passportId], references: [id])
+
+  @@index([userId])
+  @@map("impact_records")
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  city        String
+  captainId   String?
+  weeklyScore Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  captain     User?    @relation("TeamCaptain", fields: [captainId], references: [id])
+  members     TeamMember[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  teamId             String
+  userId             String
+  role               String   @default("member")
+  weeklyContribution Int      @default(0)
+  joinedAt           DateTime @default(now())
+
+  team               Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user               User     @relation(fields: [userId], references: [id])
+
+  @@id([teamId, userId])
+  @@map("team_members")
+}

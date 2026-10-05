@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "SHTRIXCOLOGY",
+    "slug": "shtrixcology",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "shtrixcology",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "updates": {
+      "enabled": false
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shtrixcology.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Qadoqni skanerlash uchun kamera kerak"
+      }
+    },
+    "android": {
+      "package": "com.shtrixcology.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#BAFF59"
+      },
+      "permissions": ["CAMERA", "POST_NOTIFICATIONS"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Qadoq rasmini yuklash uchun",
+          "cameraPermission": "Qadoq rasmini olish uchun"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

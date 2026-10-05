@@ -1,0 +1,24 @@
+{
+  "name": "shtrixcology",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-powered circular economy platform for packaging",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean",
+    "api": "pnpm --filter @shtrixcology/api dev",
+    "mobile": "pnpm --filter @shtrixcology/mobile start"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
