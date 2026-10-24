@@ -39,6 +39,23 @@ export class AuthApi {
     await this.storage.clear();
   }
 
+  // ============================================
+  // YANGI METODLAR (Parolni tiklash uchun)
+  // ============================================
+  async forgotPassword(phone: string): Promise<{ message: string; devCode?: string }> {
+    return this.client.post<{ message: string; devCode?: string }>(
+      '/auth/forgot-password',
+      { phone }
+    );
+  }
+
+  async resetPassword(phone: string, code: string, newPassword: string): Promise<{ message: string }> {
+    return this.client.post<{ message: string }>(
+      '/auth/reset-password',
+      { phone, code, newPassword }
+    );
+  }
+
   private async persist(res: AuthResponse) {
     await this.storage.setAccessToken(res.accessToken);
     await this.storage.setRefreshToken(res.refreshToken);

@@ -5,9 +5,13 @@ import {
   TeamsApi,
   WalletApi,
   ProductsApi,
-  ScanApi,  // ← QO'SHING
+  ScanApi,
+  BattlesApi,
+  SettingsApi,
+  ProvidersApi
 } from '@shtrixcology/api-client';
 import { SecureStoreStorage } from './storage';
+
 
 const storage = new SecureStoreStorage();
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
@@ -19,7 +23,10 @@ export const api = {
   teams: new TeamsApi(client),
   wallet: new WalletApi(client),
   products: new ProductsApi(client),
-  scan: new ScanApi(client),  // ← QO'SHING
+  scan: new ScanApi(client),
+  battles: new BattlesApi(client),
+  providers: new ProvidersApi(client),
+  settings: new SettingsApi(client),
 };
 
 export { storage };

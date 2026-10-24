@@ -1,27 +1,62 @@
-import type {
-  CreateTeamRequest,
-  JoinTeamRequest,
-  Team,
-  TeamScoreboardResponse,
-} from '@shtrixcology/shared';
 import type { ApiClient } from './client.js';
+
+export interface TeamListItem {
+  id: string;
+  name: string;
+  type: string;
+  city: string;
+  weeklyScore: number;
+  memberCount: number;
+  rank: number;
+}
+
+export interface MyTeam {
+  id: string;
+  name: string;
+  type: string;
+  city: string;
+  weeklyScore: number;
+  memberCount: number;
+  rank: number;
+  myRole: string;
+  myContribution: number;
+  topMembers: Array<{
+    id: string;
+    fullName: string;
+    weeklyContribution: number;
+  }>;
+}
 
 export class TeamsApi {
   constructor(private client: ApiClient) {}
 
-  create(input: CreateTeamRequest) {
-    return this.client.post<Team>('/teams', input);
+  list(): Promise<{ teams: TeamListItem[] }> {
+    return this.client.get<{ teams: TeamListItem[] }>('/teams');
   }
 
-  join(input: JoinTeamRequest) {
-    return this.client.post<Team>('/teams/join', input);
+  me(): Promise<{ team: MyTeam | null }> {
+    return this.client.get<{ team: MyTeam | null }>('/teams/me');
   }
 
-  scoreboard(id: string) {
-    return this.client.get<TeamScoreboardResponse>(`/teams/${id}`);
+  create(input: {
+    name: string;
+    type: string;
+    city: string;
+  }): Promise<{ team: { id: string; name: string } }> {
+    return this.client.post<{ team: { id: string; name: string } }>(
+      '/teams',
+      input
+    );
   }
 
-  list() {
-    return this.client.get<Team[]>('/teams');
+  join(teamId: string): Promise<{ team: { id: string; name: string } }> {
+    return this.client.post<{ team: { id: string; name: string } }>(
+      '/teams/join',
+      { teamId }
+    );
+  }
+
+  leave(): Promise<{ success: boolean }> {
+    return this.client.post<{ success: boolean }>('/teams/leave', {});
   }
 }

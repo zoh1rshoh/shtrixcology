@@ -1,0 +1,11 @@
+Scope: 5 of 6 workspace projects
+packages/shared typecheck$ tsc --noEmit
+packages/ui typecheck$ tsc --noEmit
+packages/ui typecheck: Done
+packages/shared typecheck: Done
+packages/api-client typecheck$ tsc --noEmit
+services/api typecheck$ tsc --noEmit
+packages/api-client typecheck: Done
+services/api typecheck: Done
+apps/mobile typecheck$ tsc --noEmit
+apps/mobile typecheck: Done

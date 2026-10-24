@@ -18,7 +18,8 @@
     "mobile": "pnpm --filter @shtrixcology/mobile start"
   },
   "devDependencies": {
-    "typescript": "^5.6.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "eas-cli": "^25.0.0",
+    "typescript": "^5.6.0"
   }
 }

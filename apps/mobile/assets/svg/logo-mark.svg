@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+<title>SHTRIXCOLOGY S emblem</title>
+<defs>
+ <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#D8FF76"/><stop offset=".35" stop-color="#72E52D"/><stop offset=".7" stop-color="#159A47"/><stop offset="1" stop-color="#063D2A"/>
+ </linearGradient>
+ <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+ </linearGradient>
+</defs>
+<g id="s-emblem" fill="url(#green)" stroke="#B9FF63" stroke-width="2" stroke-linejoin="round">
+ <path id="upper-ribbon" d="M368 66H246C162 66 96 112 96 179c0 54 47 77 111 96l105 31c40 12 61 27 61 51 0 33-39 57-91 57H137l54 36h93c104 0 174-42 174-108 0-48-37-76-109-97l-108-31c-39-11-60-25-60-48 0-31 32-55 75-55h143z"/>
+ <path id="upper-leaf" d="M250 212c26-62 78-91 151-103-8 63-49 101-151 103z"/>
+ <path id="lower-leaf" d="M145 376c37-59 91-83 161-75-28 49-78 76-161 75z"/>
+</g>
+</svg>

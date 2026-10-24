@@ -14,6 +14,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="wallet" />
+        <Stack.Screen name="settings" />
         <Stack.Screen name="passport/[id]" />
       </Stack>
     </QueryClientProvider>

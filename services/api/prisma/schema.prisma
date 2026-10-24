@@ -7,6 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ===========================================
+// USER
+// ===========================================
 model User {
   id           String   @id @default(uuid())
   phone        String   @unique
@@ -16,16 +19,26 @@ model User {
   role         String   @default("user")
   city         String?
   createdAt    DateTime @default(now())
-
-  passports    Passport[]
-  transactions WalletTransaction[]
-  impactRecords ImpactRecord[]
-  teamMembers  TeamMember[]
-  teamsCaptained Team[] @relation("TeamCaptain")
+  identities        IdentityProvider[]
+  messaging         MessagingIntegration[]
+  notificationPrefs NotificationPreference[]
+  auditEvents       AuditEvent[]
+  passwordResetTokens PasswordResetToken[]
+  
+  passports      Passport[]
+  transactions   WalletTransaction[]
+  impactRecords  ImpactRecord[]
+  teamMembers    TeamMember[]
+  teamsCaptained Team[]            @relation("TeamCaptain")
+  battlesCreated Battle[]          @relation("BattleCreator")
+  settings       UserSettings?
 
   @@map("users")
 }
 
+// ===========================================
+// PRODUCT
+// ===========================================
 model Product {
   id            String   @id @default(uuid())
   barcode       String   @unique
@@ -37,45 +50,51 @@ model Product {
   verified      Boolean  @default(false)
   createdAt     DateTime @default(now())
 
-  passports     Passport[]
+  passports Passport[]
 
   @@map("products")
 }
 
+// ===========================================
+// PASSPORT
+// ===========================================
 model Passport {
-  id                    String   @id @default(uuid())
+  id                    String    @id @default(uuid())
   userId                String
   productId             String?
   barcode               String
   productName           String
   aiMaterial            String
   aiConfidence          Float
-  aiStatus              String   @default("pending")
+  aiStatus              String    @default("pending")
   aiResponse            Json?
   secondLifePredictions Json
   declaredWeight        Float
   isEmpty               Boolean
-  state                 String   @default("created")
+  state                 String    @default("created")
   photoUrl              String?
   photoPhash            String?
-  rewardPoints          Int      @default(0)
-  createdAt             DateTime @default(now())
+  rewardPoints          Int       @default(0)
+  createdAt             DateTime  @default(now())
   verifiedAt            DateTime?
   returnedAt            DateTime?
   rewardedAt            DateTime?
   recycledAt            DateTime?
 
-  user                  User     @relation(fields: [userId], references: [id])
-  product               Product? @relation(fields: [productId], references: [id])
-  events                PassportEvent[]
-  transactions          WalletTransaction[]
-  impactRecords         ImpactRecord[]
+  user          User                @relation(fields: [userId], references: [id])
+  product       Product?            @relation(fields: [productId], references: [id])
+  events        PassportEvent[]
+  transactions  WalletTransaction[]
+  impactRecords ImpactRecord[]
 
   @@index([userId])
   @@index([state])
   @@map("passports")
 }
 
+// ===========================================
+// PASSPORT EVENT
+// ===========================================
 model PassportEvent {
   id         String   @id @default(uuid())
   passportId String
@@ -85,46 +104,55 @@ model PassportEvent {
   metadata   Json     @default("{}")
   createdAt  DateTime @default(now())
 
-  passport   Passport @relation(fields: [passportId], references: [id], onDelete: Cascade)
+  passport Passport @relation(fields: [passportId], references: [id], onDelete: Cascade)
 
   @@index([passportId])
   @@map("passport_events")
 }
 
+// ===========================================
+// WALLET
+// ===========================================
 model WalletTransaction {
-  id            String   @id @default(uuid())
-  userId        String
-  deltaPoints   Int
-  reason        String
-  submissionId  String?
-  redemptionId  String?
-  balanceAfter  Int
-  createdAt     DateTime @default(now())
+  id           String   @id @default(uuid())
+  userId       String
+  deltaPoints  Int
+  reason       String
+  submissionId String?
+  redemptionId String?
+  balanceAfter Int
+  createdAt    DateTime @default(now())
 
-  user          User     @relation(fields: [userId], references: [id])
-  passport      Passport? @relation(fields: [submissionId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+  passport Passport? @relation(fields: [submissionId], references: [id])
 
   @@index([userId])
   @@map("wallet_transactions")
 }
 
+// ===========================================
+// IMPACT
+// ===========================================
 model ImpactRecord {
-  id           String   @id @default(uuid())
-  userId       String
-  passportId   String
-  material     String
-  weightGrams  Float
-  co2SavedG    Float
-  methodology  String
-  createdAt    DateTime @default(now())
+  id          String   @id @default(uuid())
+  userId      String
+  passportId  String
+  material    String
+  weightGrams Float
+  co2SavedG   Float
+  methodology String
+  createdAt   DateTime @default(now())
 
-  user         User     @relation(fields: [userId], references: [id])
-  passport     Passport @relation(fields: [passportId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  passport Passport @relation(fields: [passportId], references: [id])
 
   @@index([userId])
   @@map("impact_records")
 }
 
+// ===========================================
+// TEAM
+// ===========================================
 model Team {
   id          String   @id @default(uuid())
   name        String
@@ -134,8 +162,8 @@ model Team {
   weeklyScore Int      @default(0)
   createdAt   DateTime @default(now())
 
-  captain     User?    @relation("TeamCaptain", fields: [captainId], references: [id])
-  members     TeamMember[]
+  captain User?        @relation("TeamCaptain", fields: [captainId], references: [id])
+  members TeamMember[]
 
   @@map("teams")
 }
@@ -147,9 +175,215 @@ model TeamMember {
   weeklyContribution Int      @default(0)
   joinedAt           DateTime @default(now())
 
-  team               Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user               User     @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
 
   @@id([teamId, userId])
   @@map("team_members")
+}
+
+// ===========================================
+// BATTLE
+// ===========================================
+model Battle {
+  id            String   @id @default(uuid())
+  title         String
+  type          String
+  goal          String
+  durationDays  Int
+  entry         String
+  status        String   @default("upcoming")
+  rewards       Json     @default("[]")
+  participants  Json     @default("[]")
+  creatorUserId String
+  creatorTeamId String?
+  createdAt     DateTime @default(now())
+
+  creator User @relation("BattleCreator", fields: [creatorUserId], references: [id])
+
+  @@map("battles")
+}
+
+// ===========================================
+// USER SETTINGS
+// ===========================================
+model UserSettings {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Profile
+  displayName String?
+  username    String? @unique
+  bio         String?
+  avatarUrl   String?
+
+  // Notifications
+  pushEnabled         Boolean @default(true)
+  emailEnabled        Boolean @default(false)
+  passportUpdates     Boolean @default(true)
+  rewardNotifications Boolean @default(true)
+  weeklyDigest        Boolean @default(true)
+  marketingEmails     Boolean @default(false)
+
+  // Appearance
+  theme        String  @default("system")
+  language     String  @default("uz")
+  reduceMotion Boolean @default(false)
+
+  // Privacy
+  profileVisibility String  @default("public")
+  showInRankings    Boolean @default(true)
+  showLocation      Boolean @default(true)
+  allowInvites      Boolean @default(true)
+
+  // Accessibility
+  fontSize     String  @default("medium")
+  highContrast Boolean @default(false)
+
+  // Battle
+  battleNotifications Boolean  @default(true)
+  autoAcceptInvites   Boolean  @default(false)
+  matchmakingRegion   String?
+  preferredBattleType String?
+  showInBattleRanking Boolean  @default(true)
+
+  // Connected
+  connectedGoogle   Boolean @default(false)
+  connectedTelegram Boolean @default(false)
+  connectedApple    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_settings")
+}
+// ===========================================
+// IDENTITY PROVIDERS (Google, Apple, Facebook)
+// ===========================================
+model IdentityProvider {
+  id                String   @id @default(uuid())
+  userId            String
+  provider          String   // "google" | "apple" | "facebook"
+  providerUserId    String   // stable external subject id
+  email             String?
+  displayName       String?
+  avatarUrl         String?
+  accessTokenEnc    String?  // encrypted
+  refreshTokenEnc   String?
+  tokenExpiresAt    DateTime?
+  linkedAt          DateTime @default(now())
+  lastUsedAt        DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])   // bir identity — bir user
+  @@unique([userId, provider])            // bir user — bir marta
+  @@index([userId])
+  @@map("identity_providers")
+}
+
+// ===========================================
+// MESSAGING INTEGRATIONS (Telegram, etc.)
+// ===========================================
+model MessagingIntegration {
+  id              String   @id @default(uuid())
+  userId          String
+  provider        String   // "telegram" | "instagram" | "messenger" | "x"
+  externalId      String   // telegram chat id, etc.
+  displayName     String?
+  capabilities    Json     @default("[]")   // ["notifications"]
+  status          String   @default("connected")  // connected | expired | revoked
+  accessTokenEnc  String?
+  linkedAt        DateTime @default(now())
+  lastMessageAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, externalId])
+  @@unique([userId, provider])
+  @@index([userId])
+  @@map("messaging_integrations")
+}
+
+// ===========================================
+// TELEGRAM LINK TOKENS
+// ===========================================
+model TelegramLinkToken {
+  id         String   @id @default(uuid())
+  tokenHash  String   @unique   // SHA-256 hash
+  userId     String
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@map("telegram_link_tokens")
+}
+
+// ===========================================
+// NOTIFICATION PREFERENCES MATRIX
+// ===========================================
+model NotificationPreference {
+  id          String   @id @default(uuid())
+  userId      String
+  category    String   // "security" | "battles" | "teams" | "eco" | "marketing"
+  channels    Json     @default("[]")   // ["in_app", "email", "push", "telegram"]
+  enabled     Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
+  @@index([userId])
+  @@map("notification_preferences")
+}
+
+// ===========================================
+// AUDIT LOG
+// ===========================================
+model AuditEvent {
+  id         String   @id @default(uuid())
+  userId     String?
+  eventType  String   // "password_changed" | "provider_linked" | "provider_unlinked" | ...
+  metadata   Json     @default("{}")
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@map("audit_events")
+}
+model OAuthState {
+  id             String   @id @default(uuid())
+  stateHash      String   @unique
+  provider       String
+  codeVerifier   String
+  nonce          String?
+  userId         String?
+  mode           String   // "signin" | "link"
+  mobileRedirect String?  // exp://192.168.x.x:8081/--/oauth
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime @default(now())
+
+  @@index([provider])
+  @@index([expiresAt])
+  @@map("oauth_states")
+}
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  codeHash  String   // Kodning o'zi emas, hash'i saqlanadi
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }

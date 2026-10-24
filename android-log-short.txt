@@ -1,0 +1,4 @@
+10-17 00:26:26.541 27477 27681 E DevLauncher: Trying to add unknown view tag: 13
+10-17 00:26:26.541 27477 27681 E DevLauncher: com.facebook.react.uimanager.IllegalViewOperationException: Trying to add unknown view tag: 13
+10-17 00:26:26.541 27477 27681 E DevLauncher: 	at com.facebook.react.uimanager.UIImplementation.manageChildren(UIImplementation.java:419)
+10-17 00:26:26.541 27477 27681 E DevLauncher: 	at com.facebook.react.uimanager.UIManagerModule.manageChildren(UIManagerModule.java:488)

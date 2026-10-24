@@ -177,6 +177,11 @@ export default function Profile() {
           onPress={() => Alert.alert('Tez orada', 'Bu funksiya keyingi versiyada')}
         />
         <MenuItem
+          icon="settings-outline"
+          label="Sozlamalar"
+          onPress={() => router.push('/settings')}
+        />
+        <MenuItem
           icon="help-circle-outline"
           label="Yordam"
           onPress={() => Alert.alert('Tez orada', 'Bu funksiya keyingi versiyada')}

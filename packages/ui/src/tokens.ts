@@ -1,41 +1,126 @@
 export const tokens = {
   colors: {
-    black: '#000000',
-    white: '#FFFFFF',
-    gray50: '#FAFAFA',
-    gray100: '#F5F5F5',
-    gray200: '#E5E5E5',
-    gray300: '#D4D4D4',
-    gray400: '#A3A3A3',
-    gray500: '#737373',
-    gray600: '#525252',
-    gray700: '#404040',
-    gray800: '#262626',
-    gray900: '#171717',
-    lime: '#BAFF59',
-    limeDark: '#9FE63D',
-    limeLight: '#D4FFA0',
-    success: '#22C55E',
-    warning: '#F59E0B',
-    error: '#EF4444',
-    info: '#3B82F6',
+    // ============ DARK MODE (default) ============
+    dark: {
+      bg: '#0D0F14',           // Obsidian
+      surface: '#161A22',      // Graphite
+      surfaceElevated: '#1C212B',
+      border: '#262B36',       // Slate
+      borderSubtle: '#1E232E',
+      text: '#F3F1EC',         // Ivory
+      textSecondary: '#8B8F9A', // Mist
+      textMuted: '#5C6068',
+    },
+
+    // ============ LIGHT MODE ============
+    light: {
+      bg: '#F7F5F0',
+      surface: '#FFFFFF',
+      surfaceElevated: '#FAF8F3',
+      border: '#E5E2DA',
+      borderSubtle: '#EFECE5',
+      text: '#14161C',
+      textSecondary: '#4A4E58',
+      textMuted: '#8B8F9A',
+    },
+
+    // ============ ACCENT ============
+    accent: {
+      dark: '#D4B483',         // Champagne Gold
+      hover: '#E6CBA0',        // Soft Gold
+      light: '#B8935A',        // Darker for light mode
+      subtle: 'rgba(212, 180, 131, 0.12)',  // 12% opacity
+    },
+
+    // ============ STATUS ============
+    status: {
+      success: '#5FB38A',
+      error: '#D9604C',
+      warning: '#E0A84A',
+      info: '#6C8EF5',
+    },
   },
-  fonts: {
-    sans: 'Inter',
+
+  // ============ TYPOGRAPHY ============
+  fontFamily: {
+    sans: 'Inter Tight',
     mono: 'JetBrains Mono',
   },
+
   fontSize: {
-    xs: 12, sm: 14, base: 16, lg: 18, xl: 20,
-    '2xl': 24, '3xl': 30, '4xl': 36, '5xl': 48,
+    xs: 11,
+    sm: 13,
+    base: 15,
+    lg: 17,
+    xl: 20,
+    '2xl': 24,
+    '3xl': 30,
+    '4xl': 38,
+    '5xl': 48,
   },
+
+  fontWeight: {
+    normal: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
+  },
+
+  lineHeight: {
+    tight: 1.2,
+    normal: 1.5,
+    relaxed: 1.7,
+  },
+
+  // ============ SPACING (4px base) ============
   spacing: {
-    xxs: 2, xs: 4, sm: 8, md: 16, lg: 24, xl: 32, '2xl': 48, '3xl': 64,
+    xxs: 2,
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    '2xl': 32,
+    '3xl': 48,
+    '4xl': 64,
   },
-  radius: { sm: 8, md: 12, lg: 16, xl: 24, full: 9999 },
+
+  // ============ RADIUS ============
+  radius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 20,
+    full: 9999,
+  },
+
+  // ============ SHADOWS (soft, premium) ============
   shadow: {
-    sm: '0 1px 2px rgba(0,0,0,0.05)',
-    md: '0 4px 6px rgba(0,0,0,0.08)',
-    lg: '0 10px 15px rgba(0,0,0,0.10)',
-    glow: '0 0 20px rgba(186,255,89,0.3)',
+    sm: {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.15,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    md: {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 12,
+      elevation: 4,
+    },
+    glow: {
+      shadowColor: '#D4B483',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.25,
+      shadowRadius: 16,
+      elevation: 6,
+    },
+  },
+
+  // ============ GRADIENTS ============
+  gradients: {
+    primary: ['#D4B483', '#B8935A'] as const,   // logo + primary buttons only
   },
 } as const;

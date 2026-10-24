@@ -47,21 +47,20 @@ export default function Home() {
       ]);
       setWallet(walletData);
 
-      // Stats hisoblash
       const passports = passportsData.passports ?? [];
       const recycled = passports.filter(
         (p) => p.state === 'recycled' || p.state === 'reborn'
       );
       const totalCo2 = passports.reduce((sum, p) => {
         const weight = p.declaredWeight ?? 0;
-        return sum + weight * 1.4; // g CO2 taxminan
+        return sum + weight * 1.4;
       }, 0);
 
       setStats({
         passports: passports.length,
         recycled: recycled.length,
         co2Kg: Math.round((totalCo2 / 1000) * 100) / 100,
-        streak: 0, // keyingi
+        streak: 0,
       });
     } catch (e) {
       console.log('Home load error:', e);
@@ -85,16 +84,10 @@ export default function Home() {
   const balance = wallet?.balance ?? 0;
   const firstName = user?.fullName?.split(' ')[0] ?? 'Foydalanuvchi';
 
-  const goTo = (path: string, label: string) => {
-    router.push(path as any);
-  };
-
   return (
     <View className="flex-1 bg-eco">
       {/* HEADER */}
-      {/* HEADER */}
       <View className="bg-ink pt-14 pb-5 px-5">
-        {/* Top row */}
         <View className="flex-row items-center justify-between mb-5">
           <Text className="text-lime text-[11px] font-bold tracking-[2px]">
             SHTRIXCOLOGY
@@ -103,11 +96,14 @@ export default function Home() {
             onPress={() => router.push('/(tabs)/profile')}
             className="w-9 h-9 items-center justify-center"
           >
-            <Ionicons name="notifications-outline" size={20} color="#FFFFFF" />
+            <Ionicons
+              name="notifications-outline"
+              size={20}
+              color="#FFFFFF"
+            />
           </Pressable>
         </View>
 
-        {/* Greeting + SHT chip */}
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-white/50 text-xs">Salom,</Text>
@@ -145,7 +141,8 @@ export default function Home() {
       >
         {/* SEARCH */}
         <View className="px-5 mt-4">
-          <View className="bg-white rounded-2xl flex-row items-center px-4 h-13 border border-border-default"
+          <View
+            className="bg-white rounded-2xl flex-row items-center px-4 border border-border-default"
             style={{ height: 52 }}
           >
             <Ionicons name="search" size={20} color="#8A9187" />
@@ -169,15 +166,15 @@ export default function Home() {
           {QUICK_TABS.map((tab, idx) => (
             <Pressable
               key={tab.id}
-              onPress={() => tab.onPress()}
-              className={`mr-2 px-4 py-2.5 rounded-full ${idx === 0
-                ? 'bg-ink'
-                : 'bg-white border border-border-default'
-                }`}
+              onPress={tab.onPress}
+              className={`mr-2 px-4 py-2.5 rounded-full ${
+                idx === 0 ? 'bg-ink' : 'bg-white border border-border-default'
+              }`}
             >
               <Text
-                className={`text-sm font-medium ${idx === 0 ? 'text-white' : 'text-ink'
-                  }`}
+                className={`text-sm font-medium ${
+                  idx === 0 ? 'text-white' : 'text-ink'
+                }`}
               >
                 {tab.label}
               </Text>
@@ -200,8 +197,9 @@ export default function Home() {
                 style={{ width: '48%' }}
               >
                 <View
-                  className={`w-12 h-12 rounded-2xl items-center justify-center mb-3 ${card.dark ? 'bg-ink' : 'bg-lime'
-                    }`}
+                  className={`w-12 h-12 rounded-2xl items-center justify-center mb-3 ${
+                    card.dark ? 'bg-ink' : 'bg-lime'
+                  }`}
                 >
                   <Ionicons
                     name={card.icon as any}
@@ -220,8 +218,34 @@ export default function Home() {
           </View>
         </View>
 
+        {/* DAILY BONUS */}
+        {stats.passports === 0 && (
+          <View className="px-5 mt-6">
+            <Pressable
+              onPress={() => router.push('/(tabs)/scanner')}
+              className="bg-lime rounded-2xl p-5 flex-row items-center"
+            >
+              <View className="w-12 h-12 rounded-full bg-ink items-center justify-center mr-4">
+                <Ionicons name="gift" size={22} color="#B8FF3D" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-[11px] font-bold text-ink/60 uppercase tracking-wider">
+                  Kundalik bonus
+                </Text>
+                <Text className="text-ink text-lg font-bold mt-0.5">
+                  +50 SHT oling
+                </Text>
+                <Text className="text-ink/60 text-xs mt-0.5">
+                  Bugun skanerlang va bonus oling
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#111111" />
+            </Pressable>
+          </View>
+        )}
+
         {/* STATS */}
-        <View className="px-5 mt-4">
+        <View className="px-5 mt-6">
           <Text className="text-base font-bold text-ink mb-3">
             Sizning hissangiz
           </Text>
@@ -234,15 +258,15 @@ export default function Home() {
             />
             <Divider />
             <StatBlock
-              icon="leaf-outline"
-              value={`${stats.co2Kg} kg`}
-              label="CO₂ tejalgan"
+              icon="refresh-outline"
+              value={String(stats.recycled)}
+              label="Qayta ishlangan"
             />
             <Divider />
             <StatBlock
-              icon="flame-outline"
-              value={`${stats.streak} kun`}
-              label="Ketma-ket"
+              icon="leaf-outline"
+              value={`${stats.co2Kg}kg`}
+              label="CO₂"
             />
           </View>
         </View>
@@ -301,15 +325,15 @@ function Divider() {
 
 // ===========================================
 const QUICK_TABS = [
-  { id: '1', label: 'Biz haqimizda', onPress: () => { } },
-  { id: '2', label: 'Kundalik mashqlar', onPress: () => { } },
-  { id: '3', label: 'Pul ishlash', onPress: () => { } },
+  { id: '1', label: 'Biz haqimizda', onPress: () => {} },
+  { id: '2', label: 'Kundalik mashqlar', onPress: () => {} },
+  { id: '3', label: 'Pul ishlash', onPress: () => {} },
   {
     id: '4',
     label: 'Skanerlash',
     onPress: () => router.push('/(tabs)/scanner'),
   },
-  { id: '5', label: 'Sovrinlar', onPress: () => { } },
+  { id: '5', label: 'Sovrinlar', onPress: () => {} },
 ];
 
 const GRID_CARDS = [
@@ -327,7 +351,7 @@ const GRID_CARDS = [
     subtitle: "Do'stlarni taklif qiling",
     icon: 'cash-outline',
     dark: false,
-    onPress: () => { },
+    onPress: () => {},
   },
   {
     id: 'daily',
@@ -335,7 +359,7 @@ const GRID_CARDS = [
     subtitle: 'Har kuni bonus oling',
     icon: 'calendar-outline',
     dark: false,
-    onPress: () => { },
+    onPress: () => {},
   },
   {
     id: 'rewards',
@@ -343,6 +367,6 @@ const GRID_CARDS = [
     subtitle: "SHT'ni sovg'aga almashtiring",
     icon: 'gift-outline',
     dark: true,
-    onPress: () => { },
+    onPress: () => {},
   },
 ];

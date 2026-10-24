@@ -6,3 +6,6 @@ export * from './teams.js';
 export * from './wallet.js';
 export * from './products.js';
 export * from './scan.js';
+export * from './battles.js';
+export * from './settings.js';
+export * from './providers.js';

@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "9c372b48-7606-40fe-b6ae-9fbdf7d296b8"
+      }
+    },
+    "android": {
+      "package": "com.iskandarovzohir.shtrixcology"
+    }
+  }
+}

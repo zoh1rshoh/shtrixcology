@@ -24,12 +24,15 @@ interface WalletData {
   transactions: WalletTransaction[];
 }
 
-const REASON_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  submission_reward: { label: 'Passport uchun', icon: 'cube', color: '#22C55E' },
-  redemption: { label: 'Sovg\'a uchun', icon: 'gift', color: '#EF4444' },
-  bonus: { label: 'Bonus', icon: 'star', color: '#F59E0B' },
-  admin_adjust: { label: 'Admin tuzatdi', icon: 'settings', color: '#737373' },
-  reversal: { label: 'Qaytarildi', icon: 'refresh', color: '#737373' },
+const REASON_LABELS: Record<
+  string,
+  { label: string; icon: string; color: string }
+> = {
+  submission_reward: { label: 'Passport uchun', icon: 'cube', color: '#36B37E' },
+  redemption: { label: 'Sovg\'a uchun', icon: 'gift', color: '#E5484D' },
+  bonus: { label: 'Bonus', icon: 'star', color: '#F4B740' },
+  admin_adjust: { label: 'Admin tuzatdi', icon: 'settings', color: '#8A9187' },
+  reversal: { label: 'Qaytarildi', icon: 'refresh', color: '#8A9187' },
 };
 
 export default function Wallet() {
@@ -63,34 +66,16 @@ export default function Wallet() {
   const balance = wallet?.balance ?? 0;
   const transactions = wallet?.transactions ?? [];
 
-  const formatDate = (iso: string) => {
-    const d = new Date(iso);
-    const now = new Date();
-    const diffMs = now.getTime() - d.getTime();
-    const diffMin = Math.floor(diffMs / 60000);
-    const diffHr = Math.floor(diffMs / 3600000);
-    const diffDay = Math.floor(diffMs / 86400000);
-
-    if (diffMin < 1) return 'Hozir';
-    if (diffMin < 60) return `${diffMin} daqiqa oldin`;
-    if (diffHr < 24) return `${diffHr} soat oldin`;
-    if (diffDay < 7) return `${diffDay} kun oldin`;
-
-    return d.toLocaleDateString('uz-UZ', {
-      day: '2-digit',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-eco">
       {/* HEADER */}
-      <View className="bg-black pt-14 pb-8 px-5 rounded-b-3xl">
+      <View className="bg-ink pt-14 pb-8 px-5 rounded-b-3xl">
         <View className="flex-row items-center mb-6">
-          <Pressable onPress={() => router.back()} className="p-1 -ml-1 mr-3">
-            <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Pressable
+            onPress={() => router.back()}
+            className="w-9 h-9 rounded-full bg-white/10 items-center justify-center mr-3"
+          >
+            <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
           </Pressable>
           <Text className="text-white text-lg font-bold">Hamyon</Text>
         </View>
@@ -98,10 +83,10 @@ export default function Wallet() {
         {/* BALANCE */}
         <View className="items-center">
           <View className="w-20 h-20 rounded-full bg-lime items-center justify-center mb-4">
-            <Text className="text-black text-xl font-bold">SHT</Text>
+            <Text className="text-ink text-xl font-bold">SHT</Text>
           </View>
           {loading ? (
-            <ActivityIndicator color="#BAFF59" size="large" />
+            <ActivityIndicator color="#B8FF3D" size="large" />
           ) : (
             <>
               <Text className="text-white text-5xl font-bold">
@@ -119,15 +104,17 @@ export default function Wallet() {
 
         {/* ACTIONS */}
         <View className="flex-row mt-6 gap-2">
-          <Pressable className="flex-1 bg-lime rounded-xl py-3 items-center">
-            <Text className="text-black font-bold text-sm">
-              Sovg'a olish
-            </Text>
+          <Pressable
+            onPress={() => {}}
+            className="flex-1 bg-lime rounded-xl py-3 items-center"
+          >
+            <Text className="text-ink font-bold text-sm">Sovg'a olish</Text>
           </Pressable>
-          <Pressable className="flex-1 bg-white/10 rounded-xl py-3 items-center">
-            <Text className="text-white font-bold text-sm">
-              Tarixni ko'rish
-            </Text>
+          <Pressable
+            onPress={() => {}}
+            className="flex-1 bg-white/10 rounded-xl py-3 items-center"
+          >
+            <Text className="text-white font-bold text-sm">Tarix</Text>
           </Pressable>
         </View>
       </View>
@@ -141,99 +128,151 @@ export default function Wallet() {
       >
         {/* TRANSACTIONS */}
         <View className="px-5 mt-6">
-          <Text className="text-base font-bold text-black mb-3">
-            Tranzaksiyalar
-          </Text>
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-base font-bold text-ink">
+              Tranzaksiyalar
+            </Text>
+            <Text className="text-xs text-txt-muted">
+              {transactions.length} ta
+            </Text>
+          </View>
 
           {loading ? (
             <View className="items-center py-12">
-              <ActivityIndicator color="#000" />
+              <ActivityIndicator color="#111111" />
             </View>
           ) : transactions.length === 0 ? (
-            <View className="bg-white rounded-2xl p-8 items-center">
-              <View className="w-16 h-16 rounded-full bg-gray-100 items-center justify-center mb-3">
-                <Ionicons name="receipt-outline" size={28} color="#A3A3A3" />
-              </View>
-              <Text className="text-base font-bold text-black">
-                Hali tranzaksiya yo'q
-              </Text>
-              <Text className="text-sm text-gray-500 text-center mt-1">
-                Birinchi passportingizni yaratib, SHT oling
-              </Text>
-              <Pressable
-                onPress={() => router.push('/(tabs)/scanner')}
-                className="mt-4 bg-lime rounded-xl px-6 py-3"
-              >
-                <Text className="font-bold text-black">Skanerlash</Text>
-              </Pressable>
-            </View>
+            <EmptyTransactions />
           ) : (
-            <View className="bg-white rounded-2xl overflow-hidden">
-              {transactions.map((tx, idx) => {
-                const meta =
-                  REASON_LABELS[tx.reason] ?? {
-                    label: tx.reason,
-                    icon: 'ellipse',
-                    color: '#737373',
-                  };
-                const isPlus = tx.deltaPoints > 0;
-
-                return (
-                  <View key={tx.id}>
-                    <View className="flex-row items-center px-4 py-4">
-                      <View
-                        className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                        style={{ backgroundColor: `${meta.color}15` }}
-                      >
-                        <Ionicons
-                          name={meta.icon as any}
-                          size={20}
-                          color={meta.color}
-                        />
-                      </View>
-                      <View className="flex-1">
-                        <Text className="text-base font-medium text-black">
-                          {meta.label}
-                        </Text>
-                        <Text className="text-xs text-gray-500 mt-0.5">
-                          {formatDate(tx.createdAt)}
-                        </Text>
-                      </View>
-                      <Text
-                        className={`text-base font-bold ${
-                          isPlus ? 'text-green-600' : 'text-red-500'
-                        }`}
-                      >
-                        {isPlus ? '+' : ''}
-                        {tx.deltaPoints}
-                      </Text>
-                    </View>
-                    {idx < transactions.length - 1 && (
-                      <View className="h-px bg-gray-100 ml-16" />
-                    )}
-                  </View>
-                );
-              })}
-            </View>
+            <TransactionsList transactions={transactions} />
           )}
         </View>
 
         {/* INFO */}
         <View className="px-5 mt-6">
-          <View className="bg-black/5 rounded-2xl p-4 flex-row">
-            <Ionicons name="information-circle" size={22} color="#737373" />
+          <View className="bg-ink/5 rounded-2xl p-4 flex-row">
+            <Ionicons name="information-circle" size={22} color="#8A9187" />
             <View className="flex-1 ml-3">
-              <Text className="text-sm font-medium text-black">
-                SHT nima?
-              </Text>
-              <Text className="text-xs text-gray-600 mt-1 leading-5">
-                SHT — SHTRIXCOLOGY tokeni. Har bir qayta ishlangan qadoq uchun olasiz.
-                Kelajakda sovg'alarga almashtirish, chegirmalar va boshqa imkoniyatlar.
+              <Text className="text-sm font-medium text-ink">SHT nima?</Text>
+              <Text className="text-xs text-txt-secondary mt-1 leading-5">
+                SHT — SHTRIXCOLOGY tokeni. Har bir qayta ishlangan qadoq uchun
+                olasiz. Kelajakda sovg'alarga almashtirish, chegirmalar va
+                boshqa imkoniyatlar.
               </Text>
             </View>
           </View>
         </View>
       </ScrollView>
+    </View>
+  );
+}
+
+// ===========================================
+// Transactions — sanalar bo'yicha guruhlangan
+// ===========================================
+function TransactionsList({ transactions }: { transactions: any[] }) {
+  const grouped: Record<string, any[]> = {};
+
+  transactions.forEach((tx) => {
+    const date = new Date(tx.createdAt);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    let key: string;
+    if (date.toDateString() === today.toDateString()) key = 'Bugun';
+    else if (date.toDateString() === yesterday.toDateString()) key = 'Kecha';
+    else
+      key = date.toLocaleDateString('uz-UZ', {
+        day: '2-digit',
+        month: 'long',
+      });
+
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(tx);
+  });
+
+  return (
+    <>
+      {Object.entries(grouped).map(([dateLabel, txs]) => (
+        <View key={dateLabel} className="mb-5">
+          <Text className="text-xs font-bold text-txt-muted uppercase tracking-wider mb-2 px-1">
+            {dateLabel}
+          </Text>
+          <View className="bg-white rounded-2xl border border-border-default overflow-hidden">
+            {txs.map((tx, idx) => {
+              const meta = REASON_LABELS[tx.reason] ?? {
+                label: tx.reason,
+                icon: 'ellipse',
+                color: '#8A9187',
+              };
+              const isPlus = tx.deltaPoints > 0;
+              const time = new Date(tx.createdAt).toLocaleTimeString('uz-UZ', {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+
+              return (
+                <View key={tx.id}>
+                  <View className="flex-row items-center px-4 py-3.5">
+                    <View
+                      className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                      style={{ backgroundColor: `${meta.color}15` }}
+                    >
+                      <Ionicons
+                        name={meta.icon as any}
+                        size={20}
+                        color={meta.color}
+                      />
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-sm font-medium text-ink">
+                        {meta.label}
+                      </Text>
+                      <Text className="text-[11px] text-txt-muted mt-0.5">
+                        {time}
+                      </Text>
+                    </View>
+                    <Text
+                      className={`text-base font-bold ${
+                        isPlus ? 'text-success' : 'text-error'
+                      }`}
+                    >
+                      {isPlus ? '+' : ''}
+                      {tx.deltaPoints}
+                    </Text>
+                  </View>
+                  {idx < txs.length - 1 && (
+                    <View className="h-px bg-border-default ml-16" />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      ))}
+    </>
+  );
+}
+
+function EmptyTransactions() {
+  return (
+    <View className="bg-white rounded-2xl border border-border-default p-8 items-center">
+      <View className="w-16 h-16 rounded-full bg-eco-gray items-center justify-center mb-3">
+        <Ionicons name="receipt-outline" size={28} color="#8A9187" />
+      </View>
+      <Text className="text-base font-bold text-ink">
+        Hali tranzaksiya yo'q
+      </Text>
+      <Text className="text-sm text-txt-muted text-center mt-1">
+        Birinchi passportingizni yaratib, SHT oling
+      </Text>
+      <Pressable
+        onPress={() => router.push('/(tabs)/scanner')}
+        className="mt-4 bg-ink rounded-xl px-6 py-3"
+      >
+        <Text className="font-bold text-lime">Skanerlash</Text>
+      </Pressable>
     </View>
   );
 }

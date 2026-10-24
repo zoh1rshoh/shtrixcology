@@ -14,6 +14,17 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/v1', apiRouter);
 app.use(errorHandler);
 
+// ============================================
+// XATOLARNI GLOBAL USHLASH (Process crash bo'lmasligi uchun)
+// ============================================
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error({ promise, reason }, '❌ Unhandled Rejection at:');
+});
+
+process.on('uncaughtException', (error) => {
+  logger.error({ error }, '❌ Uncaught Exception:');
+});
+
 function getLocalIP(): string {
   const ifaces = os.networkInterfaces();
   for (const name of Object.keys(ifaces)) {
