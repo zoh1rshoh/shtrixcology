@@ -14,23 +14,25 @@ const app = express();
 app.disable('x-powered-by');
 
 // Trust a reverse proxy only when explicitly configured.
-// Set TRUST_PROXY=1 only when the deployment topology warrants it.
 if (process.env.TRUST_PROXY === '1') {
   app.set('trust proxy', 1);
 }
 
-// Configure browser origins through CORS_ORIGINS.
-// Example: https://app.example.com,https://admin.example.com
-const allowedOrigins = (
-  process.env.CORS_ORIGINS ?? ''
-)
+// Configure allowed browser origins through env.ts.
+const allowedOrigins = env.CORS_ORIGINS
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-if (env.NODE_ENV === 'production' && allowedOrigins.length === 0) {
-  throw new Error(
-    'CORS_ORIGINS must contain approved browser origins in production.'
+// A browser frontend must have an explicit origin allowlist in production.
+// A mobile-only API may not need CORS_ORIGINS; revisit this if a web
+// frontend or admin panel is deployed.
+if (
+  env.NODE_ENV === 'production' &&
+  allowedOrigins.length === 0
+) {
+  logger.warn(
+    'CORS_ORIGINS is empty; browser cross-origin access will not be allowed.'
   );
 }
 
@@ -39,34 +41,49 @@ app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'no-referrer');
-  res.setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'none'; frame-ancestors 'none'"
+  );
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=()'
+  );
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
 
-// Native mobile clients may not send an Origin header.
+// Native mobile clients commonly do not send an Origin header.
 // Browser clients must match an explicitly allowed origin.
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) {
         return callback(null, true);
       }
 
-      // Do not grant CORS access to unknown browser origins.
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Do not grant browser CORS access to unknown origins.
       return callback(null, false);
     },
     credentials: false,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Idempotency-Key',
+    ],
     maxAge: 600,
   })
 );
 
-// Retain the current payload limit for compatibility with the scanner.
-// A separate, smaller limit should be applied to ordinary JSON endpoints.
-app.use(express.json({ limit: '10mb', strict: true }));
+// Apply a conservative default JSON body limit.
+// If the scanner sends large base64 images, use a dedicated larger
+// limit on that specific route rather than increasing every endpoint.
+app.use(express.json({ limit: '1mb', strict: true }));
 
 app.use('/v1', apiRouter);
 
@@ -106,8 +123,8 @@ server.requestTimeout = 30_000;
 server.headersTimeout = 15_000;
 server.keepAliveTimeout = 5_000;
 
-// Uncaught exceptions leave the process in an unknown state.
-// Log and terminate; let the process manager restart it.
+// Log and terminate on unexpected process-level failures.
+// A process manager or development runner should restart the API.
 process.on('uncaughtException', (error) => {
   logger.fatal({ error }, 'Uncaught exception; shutting down');
   process.exit(1);
