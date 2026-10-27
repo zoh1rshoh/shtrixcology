@@ -17,6 +17,12 @@
     "api": "pnpm --filter @shtrixcology/api dev",
     "mobile": "pnpm --filter @shtrixcology/mobile start"
   },
+  "pnpm": {
+    "overrides": {
+      "body-parser": "1.20.9",
+      "tar": "7.5.21"
+    }
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "eas-cli": "^25.0.0",

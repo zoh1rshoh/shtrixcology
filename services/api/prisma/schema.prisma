@@ -17,6 +17,7 @@ model User {
   fullName     String
   passwordHash String
   role         String   @default("user")
+  tokenVersion Int      @default(0)
   city         String?
   createdAt    DateTime @default(now())
   identities        IdentityProvider[]
@@ -128,6 +129,7 @@ model WalletTransaction {
 
   @@index([userId])
   @@map("wallet_transactions")
+  @@unique([submissionId])
 }
 
 // ===========================================
